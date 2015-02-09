@@ -14,10 +14,10 @@
         this.domElem = doc.getElementById(containerId);
         this.domElem.className = 'app';
 
-        catImagePath = this.domElem.getAttribute('data-image') || '';
-
-        cat = new Picture(this.domElem, catImagePath);
-
+        catPath = this.domElem.getAttribute('data-image') || '';
+        catTitle = this.domElem.getAttribute('data-title')  || '';
+        
+        cat = new Picture(this.domElem, catPath, catTitle);
         catClicker = new ClickCounter(this.domElem, cat);
     };
 
@@ -59,18 +59,24 @@
     /**
      * @class Picture
      */
-    var Picture = function(container, picturePath) {
+    var Picture = function(container, picturePath, pictureTitle) {
 
         // Invoke Observable constructor
         Observable.call(this);
 
         this.domElem = container;
 
+        this.title = pictureTitle;
+
         this.picture = new Image();
         this.picture.src = picturePath;
         this.picture.addEventListener('click', this.clickHandler.bind(this));
-
         this.domElem.appendChild(this.picture);
+
+        var titleDomElem = document.createElement('div');
+        titleDomElem.className = "picture-title";
+        titleDomElem.innerHTML = pictureTitle;
+        this.domElem.appendChild(titleDomElem);
     };
 
     // Inherit from observable
@@ -100,7 +106,7 @@
     }
 
     ClickCounter.prototype.increaseClicks = function() {
-        this.counter++;                                                                console.log('this.counter', this.counter);
+        this.counter++;
         this.updateCounter();
     };
 
@@ -112,7 +118,8 @@
      * App init
      */
     window.onload = function() {
-        var app = new App('cat-clicker');
+        new App('cat-clicker-russle');
+        new App('cat-clicker-brad');
     }
 
 }(window));
