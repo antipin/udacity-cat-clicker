@@ -10,7 +10,7 @@
     window.onload = function() {
         var appContainer = doc.getElementById('app');
         var pictures = appContainer.getAttribute('data-pictures').split(',');
-        var app = new PictureClickerView(appContainer, pictures);
+        var app = new BrowserView(appContainer, pictures);
     };
 
     /**
@@ -21,7 +21,7 @@
         this.bindings = {};
     };
 
-    /**
+    /** 
      * @param {string} event
      * @param {Function} callback
      * @param {Object} context
@@ -151,12 +151,12 @@
     };
 
     /**
-     * @class PictureClickerView
+     * @class BrowserView
      * @param {HTMLElement} container
      * @param {Array.<string>} pictures
      * @constructor
      */
-    var PictureClickerView = function(container, pictures) {
+    var BrowserView = function(container, pictures) {
 
         this.name = 'picture-clicker';
 
@@ -171,25 +171,26 @@
     };
 
     // Inherit from View
-    PictureClickerView.prototype = Object.create(View.prototype);
-    PictureClickerView.prototype.constructor = PictureClickerView;
+    BrowserView.prototype = Object.create(View.prototype);
+    BrowserView.prototype.constructor = BrowserView;
 
     /**
-     * Renders PictureClickerView view
+     * Renders BrowserView view
      * @param {string} title
      * @param {string} items - HTML 
      * @override
      */
-    PictureClickerView.prototype.getTemplate = function(title, items) {
+    BrowserView.prototype.getTemplate = function(title, items) {
 
-        return '<ul class="picture-clicker__list"></ul>';
+        return '<div class="picture-clicker__popup"></div>' +
+               '<ul class="picture-clicker__list"></ul>';
     };
 
     /**
      * @inheritdoc
      * @override
      */
-    PictureClickerView.prototype.render = function() {
+    BrowserView.prototype.render = function() {
 
         // Invoke View constructor
         var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
@@ -205,7 +206,7 @@
     /**
      * Renders pictures
      */
-    PictureClickerView.prototype.renderPictures = function() {
+    BrowserView.prototype.renderPictures = function() {
 
         this.pictureViews = [];
 
@@ -291,5 +292,33 @@
 
         this.elem('counter').innerHTML = this.counter;
     };
+
+    /**
+     * @class PictureView
+     * @param {HTMLElement} container
+     * @param {string} path
+     * @param {string} title
+     * @constructor
+     */
+    var PictureView = function(container, path, title) {
+
+        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
+
+        this.tag = 'li';
+        this.name = 'picture';
+
+        this.counter = 0;
+
+        // Invoke View constructor
+        basePrototype.constructor.call(this, container);
+
+        this.path = path;
+        this.title = title || 'no name';
+        
+        this.render();
+    };
+    // Inherit from observable
+    PictureView.prototype = Object.create(View.prototype);
+    PictureView.prototype.constructor = PictureView;
 
 }(window));
