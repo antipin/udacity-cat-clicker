@@ -7,9 +7,21 @@ body {
   margin: 0;
 }
 
+/* Logo */
+.logo {
+	text-indent: -9999px;
+	margin: 20px 0 0 20px;
+	padding: 0;
+	position: fixed;
+	background: url(assets/logo.svg) 50% 50% no-repeat;
+	background-size: contain;
+	height: 420px;
+	width: 60px;  
+}
+
 /* PictureClickerView */
 .picture-clicker {
-	position: relative;
+	margin: 0 100px;
 }
 
 .picture-clicker__list {
