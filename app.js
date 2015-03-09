@@ -9,8 +9,7 @@
      */
     window.onload = function() {
         var appContainer = doc.getElementById('app');
-        var pictures = appContainer.getAttribute('data-pictures').split(',');
-        var app = new BrowserView(appContainer, pictures);
+        new App(appContainer);
     };
 
     /**
@@ -70,6 +69,47 @@
         }  
     };
 
+    /**
+     * @class App
+     * @param {HTMLElement} container
+     * @constructor
+     */
+    var App = function(container) {
+        
+        this.container = container;
+
+        var pictures = this.getPictureItems();
+
+        this.browser = new BrowserView(this.container);
+
+        this.browser
+            
+            .registerItemType({
+                name: 'picture',
+                previewConstructor:  PictureView,
+                fullviewConstructor: PictureView,
+            })
+            
+            .addItems(pictures)
+            
+            .render();
+    };
+
+    /**
+     * @return {Array.<BrowserItemData>}
+     */
+    App.prototype.getPictureItems = function() {
+        
+        var pictures = this.container.getAttribute('data-pictures').split(',');
+
+        return pictures.map(function(picture) {
+
+            return new BrowserItemData('picture', {
+                path:  picture + '.jpg',
+                title: picture
+            });
+        });
+    };
 
     /**
      * Base class for views
@@ -156,23 +196,55 @@
      * @param {Array.<string>} pictures
      * @constructor
      */
-    var BrowserView = function(container, pictures) {
+    var BrowserView = function(container) {
 
         this.name = 'picture-clicker';
 
-        this.pictures = pictures;
+        /**
+         * @type {Array.<BrowserItemData>}
+         */
+        this._items = [];
 
         // Invoke View constructor
         var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
 
         basePrototype.constructor.call(this, container);
-
-        this.render();
     };
 
     // Inherit from View
     BrowserView.prototype = Object.create(View.prototype);
     BrowserView.prototype.constructor = BrowserView;
+
+    /**
+     * @typedef BrowserItemType
+     * @type {Object}
+     * @property {name}
+     * @property {previewConstructor}
+     * @property {fullviewConstructor}
+     */
+
+    /**
+     * @param {BrowserItemType} itemType
+     * @return {BrowserView} instance
+     */
+    BrowserView.prototype.registerItemType = function(itemType) {
+
+        this._itemTypes = this._itemTypes || {};
+
+        this._itemTypes[itemType.name] = itemType;
+
+        return this;
+    };
+
+    /**
+     * @param {Array.<BrowserItemData>} items
+     */
+    BrowserView.prototype.addItems = function(items) {
+
+        this._items = this._items.concat(items);
+
+        return this;
+    };
 
     /**
      * Renders BrowserView view
@@ -196,7 +268,7 @@
         var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
         basePrototype.render.call(this);
         
-        this.renderPictures();
+        this.renderList();
 
         this.attachToContainer();
 
@@ -206,26 +278,61 @@
     /**
      * Renders pictures
      */
-    BrowserView.prototype.renderPictures = function() {
+    BrowserView.prototype.renderList = function() {
 
-        this.pictureViews = [];
+        this._itemViews = [];
 
-        this.pictures.forEach(function(pictureName) {
+        this._items.forEach(function(item) {
 
-            var picture = new PictureView(this.elem('list'), pictureName + '.jpg', pictureName);
+            var ItemView = this.getItemConstructor(item.type, 'preview');
 
-            this.pictureViews.push(picture);
+            this._itemViews.push(new ItemView(this.elem('list'), item.data));
+
         }, this);
+    };
+
+    /**
+     * Returns item constructor BrowserItemType
+     * @param {string} type - BrowserItem type name
+     * @param {('preview'|'fullview')} mode - BrowserItem constructor mode
+     * @returns {Function}
+     */
+    BrowserView.prototype.getItemConstructor = function(type, mode) {
+
+        var itemType = this._itemTypes[type] || this._itemTypes['default'],
+            modesMap = {
+                preview:  'previewConstructor',
+                fullview: 'fullviewConstructor'
+            };
+
+        return itemType[modesMap[mode]];
+    };
+
+    /**
+     * @param {string} [type] Item type
+     * @param {Object} data Item data object
+     * @constructor
+     */
+    var BrowserItemData = function(type, data) {
+
+        if (typeof type === 'object') {
+            data = type;
+            type = 'default'
+        }
+
+        this.data = data;
+        this.type = type;
     };
 
     /**
      * @class PictureView
      * @param {HTMLElement} container
-     * @param {string} path
-     * @param {string} title
+     * @param {Object} data
      * @constructor
      */
-    var PictureView = function(container, path, title) {
+    var PictureView = function(container, data) {
+
+        data = data || {};
 
         var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
 
@@ -237,8 +344,8 @@
         // Invoke View constructor
         basePrototype.constructor.call(this, container);
 
-        this.path = path;
-        this.title = title || 'no name';
+        this.path = data.path;
+        this.title = data.title || '';
         
         this.render();
     };
@@ -292,33 +399,5 @@
 
         this.elem('counter').innerHTML = this.counter;
     };
-
-    /**
-     * @class PictureView
-     * @param {HTMLElement} container
-     * @param {string} path
-     * @param {string} title
-     * @constructor
-     */
-    var PictureView = function(container, path, title) {
-
-        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
-
-        this.tag = 'li';
-        this.name = 'picture';
-
-        this.counter = 0;
-
-        // Invoke View constructor
-        basePrototype.constructor.call(this, container);
-
-        this.path = path;
-        this.title = title || 'no name';
-        
-        this.render();
-    };
-    // Inherit from observable
-    PictureView.prototype = Object.create(View.prototype);
-    PictureView.prototype.constructor = PictureView;
 
 }(window));
