@@ -1,33 +1,31 @@
 (function(window) {
 
+    'use strict';
+
     var doc = window.document;
 
     /**
-     * @class App 
+     * App init
      */
-    var App = function(containerId) {
-
-        var cat,
-            catClicker,
-            catImagePath;
-
-        this.domElem = doc.getElementById(containerId);
-        this.domElem.className = 'app';
-
-        catPath = this.domElem.getAttribute('data-image') || '';
-        catTitle = this.domElem.getAttribute('data-title')  || '';
-        
-        cat = new Picture(this.domElem, catPath, catTitle);
-        catClicker = new ClickCounter(this.domElem, cat);
+    window.onload = function() {
+        var appContainer = doc.getElementById('app');
+        var pictures = appContainer.getAttribute('data-pictures').split(',');
+        var app = new PictureClickerView(appContainer, pictures);
     };
 
     /**
      * @class Observable
+     * @constructor
      */
     var Observable = function() {
         this.bindings = {};
     };
 
+    /**
+     * @param {string} event
+     * @param {Function} callback
+     * @param {Object} context
+     */
     Observable.prototype.on = function(event, callback, context) {
         
         this.bindings[event] = this.bindings[event] || [];
@@ -38,88 +36,260 @@
         });
     };
 
+    /**
+     * @param {string} event
+     * @param {Function} callback
+     * @param {Object} context
+     */
     Observable.prototype.off = function(event, callback, context) {
+
         if (Array.isArray(this.bindings[event])) {
+
             this.bindings[event].forEach(function(callbackParams, index) {
+
                 if (callbackParams.callback === callback && callbackParams.context === context) {
+
                     this.bindings[event].splice(index, 1);
                 }
             }, this);
         }
     };
 
+    /**
+     * @param {string} event
+     * @param {Object} data
+     */
     Observable.prototype.trigger = function(event, data) {
+
         if (Array.isArray(this.bindings[event])) {
+
             this.bindings[event].forEach(function(callbackParams) {
+
                 callbackParams.callback.call(callbackParams.context, data);
             });
         }  
     };
 
-    /**
-     * @class Picture
-     */
-    var Picture = function(container, picturePath, pictureTitle) {
 
+    /**
+     * Base class for views
+     * @class View
+     * @param {HTMLElement} container
+     * @constructor
+     */
+    var View = function(container) {
+        
         // Invoke Observable constructor
         Observable.call(this);
 
-        this.domElem = container;
+        this.container = container;
 
-        this.title = pictureTitle;
+        this.domElem = doc.createElement(this.tag || 'div');
 
-        this.picture = new Image();
-        this.picture.src = picturePath;
-        this.picture.addEventListener('click', this.clickHandler.bind(this));
-        this.domElem.appendChild(this.picture);
-
-        var titleDomElem = document.createElement('div');
-        titleDomElem.className = "picture-title";
-        titleDomElem.innerHTML = pictureTitle;
-        this.domElem.appendChild(titleDomElem);
+        if (this.name) {
+            this.domElem.classList.add(this.name);
+        }
     };
 
     // Inherit from observable
-    Picture.prototype = Object.create(Observable.prototype);
-    Picture.prototype.constructor = Picture;
+    View.prototype = Object.create(Observable.prototype);
+    View.prototype.constructor = View;
 
-    Picture.prototype.getDomElem = function() {
-        return this.domElem;
-    };
+    /**
+     * Renders view
+     * @param {string} [tagName]
+     * @return {View} instance
+     */
+    View.prototype.render = function(tagName) {
 
-    Picture.prototype.clickHandler = function(e) {
-        this.trigger('click');
+        this.domElem.innerHTML = this.getTemplate();
+
+        return this;
     };
 
     /**
-     * @class Clicker
+     * Appends rendered HTMLElement to container
+     * @return {View} instance
      */
-    var ClickCounter = function(container, target) {
+    View.prototype.attachToContainer = function() {
+
+        this.container.appendChild(this.domElem);
+
+        return this;
+    };
+
+    /**
+     * @return {string} HTML template
+     */
+    View.prototype.getTemplate = function() {
+
+        return '';
+    };
+
+    /**
+     * Returns view's element by name
+     * @return {HTMLElement} 
+     */
+    View.prototype.elem = function(elemName) {
+
+        var elemSelector = '.' + this.name + '__' + elemName,
+            elem;
+
+        this._elemsCache = this._elemsCache || {};
+
+        if (this._elemsCache[elemName]) {
+            return this._elemsCache[elemName];
+        }
+
+        elem = this.domElem.querySelector(elemSelector);
+
+        if (elem !== null) {
+            this._elemsCache[elemName] = elem;
+        }
+
+        return elem;
+    };
+
+    /**
+     * @class PictureClickerView
+     * @param {HTMLElement} container
+     * @param {Array.<string>} pictures
+     * @constructor
+     */
+    var PictureClickerView = function(container, pictures) {
+
+        this.name = 'picture-clicker';
+
+        this.pictures = pictures;
+
+        // Invoke View constructor
+        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
+
+        basePrototype.constructor.call(this, container);
+
+        this.render();
+    };
+
+    // Inherit from View
+    PictureClickerView.prototype = Object.create(View.prototype);
+    PictureClickerView.prototype.constructor = PictureClickerView;
+
+    /**
+     * Renders PictureClickerView view
+     * @param {string} title
+     * @param {string} items - HTML 
+     * @override
+     */
+    PictureClickerView.prototype.getTemplate = function(title, items) {
+
+        return '<ul class="picture-clicker__list"></ul>';
+    };
+
+    /**
+     * @inheritdoc
+     * @override
+     */
+    PictureClickerView.prototype.render = function() {
+
+        // Invoke View constructor
+        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
+        basePrototype.render.call(this);
+        
+        this.renderPictures();
+
+        this.attachToContainer();
+
+        return this;
+    };
+
+    /**
+     * Renders pictures
+     */
+    PictureClickerView.prototype.renderPictures = function() {
+
+        this.pictureViews = [];
+
+        this.pictures.forEach(function(pictureName) {
+
+            var picture = new PictureView(this.elem('list'), pictureName + '.jpg', pictureName);
+
+            this.pictureViews.push(picture);
+        }, this);
+    };
+
+    /**
+     * @class PictureView
+     * @param {HTMLElement} container
+     * @param {string} path
+     * @param {string} title
+     * @constructor
+     */
+    var PictureView = function(container, path, title) {
+
+        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
+
+        this.tag = 'li';
+        this.name = 'picture';
 
         this.counter = 0;
 
-        this.counterDomElem = document.createElement('div');
-        this.counterDomElem.className = "counter";
-        container.appendChild(this.counterDomElem);
+        // Invoke View constructor
+        basePrototype.constructor.call(this, container);
 
-        target.on('click', this.increaseClicks, this);
-    }
-
-    ClickCounter.prototype.increaseClicks = function() {
-        this.counter++;
-        this.updateCounter();
+        this.path = path;
+        this.title = title || 'no name';
+        
+        this.render();
     };
 
-    ClickCounter.prototype.updateCounter = function() {
-        this.counterDomElem.innerHTML = this.counter;
+    // Inherit from observable
+    PictureView.prototype = Object.create(View.prototype);
+    PictureView.prototype.constructor = PictureView;
+
+    PictureView.prototype.getTemplate = function(title, items) {
+
+        return '<div class="picture__title"></div>' +
+               '<div class="picture__counter"></div>' +
+               '<div class="picture__image"></div>';
     };
 
     /**
-     * App init
+     * @inheritdoc
+     * @override
      */
-    window.onload = function() {
-        new App('cat-clicker-russle');
-        new App('cat-clicker-brad');
-    }
+    PictureView.prototype.render = function() {
+
+        // Invoke View constructor
+        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
+        basePrototype.render.call(this);
+
+        this.elem('image').style.backgroundImage = 'url(images/' + this.path + ')';
+        this.elem('image').addEventListener('click', this._clickHandler.bind(this));
+        
+        this.elem('title').innerHTML = this.title;
+
+        this.renderCounter();
+
+        this.attachToContainer();
+
+        return this;
+    };
+
+    /**
+     * @param {MouseEvent} e
+     */
+    PictureView.prototype._clickHandler = function(e) {
+
+        this.counter++;
+        this.renderCounter();
+    };
+
+    /**
+     * Updates counter
+     */
+    PictureView.prototype.renderCounter = function() {
+
+        this.elem('counter').innerHTML = this.counter;
+    };
 
 }(window));
