@@ -198,7 +198,7 @@
      */
     var BrowserView = function(container) {
 
-        this.name = 'picture-clicker';
+        this.name = 'browser';
 
         /**
          * @type {Array.<BrowserItemData>}
@@ -254,8 +254,8 @@
      */
     BrowserView.prototype.getTemplate = function(title, items) {
 
-        return '<div class="picture-clicker__popup"></div>' +
-               '<ul class="picture-clicker__list"></ul>';
+        return '<div class="browser__popup"></div>' +
+               '<ul class="browser__list"></ul>';
     };
 
     /**
@@ -309,6 +309,7 @@
     };
 
     /**
+     * @class BrowserItemData
      * @param {string} [type] Item type
      * @param {Object} data Item data object
      * @constructor
