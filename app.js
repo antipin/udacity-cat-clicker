@@ -91,12 +91,12 @@
             .registerItemType({
                 name: 'picture',
                 previewConstructor:  PictureThumbView,
-                fullviewConstructor: PictureFullView,
+                fullviewConstructor: PictureFullView
             })
             
             .addItems(pictures)
             
-            .render();
+            .toContainer();
     };
 
     /**
@@ -129,12 +129,6 @@
         Observable.call(this);
 
         this.container = container;
-
-        this.domElem = doc.createElement(this.tag || 'div');
-
-        if (Array.isArray(this._names)) {
-            this.domElem.classList.add.apply(this.domElem.classList, this._names);
-        }
     };
 
     // Inherit from observable
@@ -161,20 +155,38 @@
      * @param {string} [tagName]
      * @return {View} instance
      */
-    View.prototype.render = function(tagName) {
+    View.prototype.buildDomElem = function(tagName) {
 
-        this.domElem.innerHTML = this.getTemplate();
+        var domElem = doc.createElement(this.tag || 'div');
 
-        return this;
+        if (Array.isArray(this._names)) {
+            domElem.classList.add.apply(domElem.classList, this._names);
+        }
+
+        domElem.innerHTML = this.getTemplate();
+
+        return domElem;
     };
 
     /**
      * Appends rendered HTMLElement to container
      * @return {View} instance
      */
-    View.prototype.attachToContainer = function() {
+    View.prototype.toContainer = function() {
 
-        this.container.appendChild(this.domElem);
+        var domElem = this.buildDomElem();
+
+        // View is being rendered for the first time
+        if (!this.publishedDomElem) {
+
+            this.container.appendChild(domElem);
+
+        } else {
+
+            this.container.replaceChild(domElem, this.publishedDomElem);
+        }
+
+        this.publishedDomElem = domElem;
 
         return this;
     };
@@ -189,26 +201,15 @@
 
     /**
      * Returns view's element by name
+     * @param {HTMLElement} domElem
+     * @return {string} element name
      * @return {HTMLElement} 
      */
-    View.prototype.elem = function(elemName) {
+    View.prototype.elem = function(domElem, elemName) {
 
-        var elemSelector = '.' + this.name + '__' + elemName,
-            elem;
+        var elemSelector = '.' + this.name + '__' + elemName;
 
-        this._elemsCache = this._elemsCache || {};
-
-        if (this._elemsCache[elemName]) {
-            return this._elemsCache[elemName];
-        }
-
-        elem = this.domElem.querySelector(elemSelector);
-
-        if (elem !== null) {
-            this._elemsCache[elemName] = elem;
-        }
-
-        return elem;
+        return domElem.querySelector(elemSelector);
     };
 
     //==========================================================================================================================================================================
@@ -282,30 +283,29 @@
      * @inheritdoc
      * @override
      */
-    BrowserView.prototype.render = function() {
+    BrowserView.prototype.buildDomElem = function() {
 
         // Invoke View constructor
-        View.prototype.render.call(this);
+        var domElem = View.prototype.buildDomElem.call(this),
+            listDomElem = this.elem(domElem, 'list');
         
-        this.renderList();
+        this.populateDomElemWithListItems(listDomElem);
 
-        this.attachToContainer();
-
-        return this;
+        return domElem;
     };
 
     /**
      * Renders pictures
+     * @param {HTMLElement} domElem
      */
-    BrowserView.prototype.renderList = function() {
-
-        this._itemViews = [];
+    BrowserView.prototype.populateDomElemWithListItems = function(domElem) {
 
         this._items.forEach(function(item) {
 
-            var ItemView = this.getItemConstructor(item.type, 'preview');
+            var ItemView = this.getItemConstructor(item.type, 'preview'),
+                item = new ItemView(domElem, item.data);
 
-            this._itemViews.push(new ItemView(this.elem('list'), item.data));
+            item.toContainer();
 
         }, this);
     };
@@ -386,8 +386,6 @@
 
         this.path = data.path;
         this.title = data.title || '';
-
-        this.render();
     };
 
     // Inherit from observable
@@ -404,17 +402,15 @@
      * @inheritdoc
      * @override
      */
-    PictureThumbView.prototype.render = function() {
+    PictureThumbView.prototype.buildDomElem = function() {
 
-        BrowserItemView.prototype.render.call(this);
+        var domElem = BrowserItemView.prototype.buildDomElem.call(this);
 
-        this.elem('image').style.backgroundImage = 'url(images/' + this.path + ')';
+        this.elem(domElem, 'image').style.backgroundImage = 'url(images/' + this.path + ')';
         
-        this.elem('title').innerHTML = this.title;
+        this.elem(domElem, 'title').innerHTML = this.title;
 
-        this.attachToContainer();
-
-        return this;
+        return domElem;
     };
 
     //==========================================================================================================================================================================
@@ -439,8 +435,6 @@
 
         this.path = data.path;
         this.title = data.title || '';
-        
-        this.render();
     };
 
     // Inherit from observable
@@ -458,20 +452,18 @@
      * @inheritdoc
      * @override
      */
-    PictureFullView.prototype.render = function() {
+    PictureFullView.prototype.buildDomElem = function() {
 
-        View.prototype.render.call(this);
+        var domElem = View.prototype.buildDomElem.call(this);
 
-        this.elem('image').style.backgroundImage = 'url(images/' + this.path + ')';
-        this.elem('image').addEventListener('click', this._clickHandler.bind(this));
+        this.elem(domElem, 'image').style.backgroundImage = 'url(images/' + this.path + ')';
+        this.elem(domElem, 'image').addEventListener('click', this._clickHandler.bind(this));
         
-        this.elem('title').innerHTML = this.title;
+        this.elem(domElem, 'title').innerHTML = this.title;
 
-        this.renderCounter();
+        this.updateCounterDomElem(domElem);
 
-        this.attachToContainer();
-
-        return this;
+        return domElem;
     };
 
     /**
@@ -480,15 +472,15 @@
     PictureFullView.prototype._clickHandler = function(e) {
 
         this.counter++;
-        this.renderCounter();
+        this.updateCounterDomElem(this.publishedDomElem);
     };
 
     /**
      * Updates counter
      */
-    PictureFullView.prototype.renderCounter = function() {
+    PictureFullView.prototype.updateCounterDomElem = function(domElem) {
 
-        this.elem('counter').innerHTML = this.counter;
+        this.elem(domElem, 'counter').innerHTML = this.counter;
     };
 
 }(window));
