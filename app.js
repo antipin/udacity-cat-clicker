@@ -12,6 +12,8 @@
         new App(appContainer);
     };
 
+    //==========================================================================================================================================================================
+
     /**
      * @class Observable
      * @constructor
@@ -69,6 +71,8 @@
         }  
     };
 
+    //==========================================================================================================================================================================
+
     /**
      * @class App
      * @param {HTMLElement} container
@@ -86,8 +90,8 @@
             
             .registerItemType({
                 name: 'picture',
-                previewConstructor:  PictureView,
-                fullviewConstructor: PictureView,
+                previewConstructor:  PictureThumbView,
+                fullviewConstructor: PictureFullView,
             })
             
             .addItems(pictures)
@@ -111,6 +115,8 @@
         });
     };
 
+    //==========================================================================================================================================================================
+
     /**
      * Base class for views
      * @class View
@@ -126,14 +132,29 @@
 
         this.domElem = doc.createElement(this.tag || 'div');
 
-        if (this.name) {
-            this.domElem.classList.add(this.name);
+        if (Array.isArray(this._names)) {
+            this.domElem.classList.add.apply(this.domElem.classList, this._names);
         }
     };
 
     // Inherit from observable
     View.prototype = Object.create(Observable.prototype);
     View.prototype.constructor = View;
+
+    /**
+     * Set views name. All names uses as css class names
+     * @param {string} name
+     * @return {View} instance
+     */
+    View.prototype._setName = function(name) {
+
+        if (!this.name) {
+            this.name = name;   
+        }
+
+        this._names = this._names || [];
+        this._names.push(name);
+    };
 
     /**
      * Renders view
@@ -190,6 +211,8 @@
         return elem;
     };
 
+    //==========================================================================================================================================================================
+
     /**
      * @class BrowserView
      * @param {HTMLElement} container
@@ -198,17 +221,14 @@
      */
     var BrowserView = function(container) {
 
-        this.name = 'browser';
+        this._setName('browser');
 
         /**
          * @type {Array.<BrowserItemData>}
          */
         this._items = [];
 
-        // Invoke View constructor
-        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
-
-        basePrototype.constructor.call(this, container);
+        View.call(this, container);
     };
 
     // Inherit from View
@@ -265,8 +285,7 @@
     BrowserView.prototype.render = function() {
 
         // Invoke View constructor
-        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
-        basePrototype.render.call(this);
+        View.prototype.render.call(this);
         
         this.renderList();
 
@@ -308,6 +327,26 @@
         return itemType[modesMap[mode]];
     };
 
+    //==========================================================================================================================================================================
+
+    /**
+     * @class BrowserItemView
+     * @param {HTMLElement} container
+     * @constructor
+     */
+    var BrowserItemView = function(container) {
+
+        this._setName('browser-item');
+
+        View.call(this, container);
+    };
+
+    // Inherit from View
+    BrowserItemView.prototype = Object.create(View.prototype);
+    BrowserItemView.prototype.constructor = BrowserItemView;
+
+    //==========================================================================================================================================================================
+
     /**
      * @class BrowserItemData
      * @param {string} [type] Item type
@@ -325,25 +364,78 @@
         this.type = type;
     };
 
+    //==========================================================================================================================================================================
+
     /**
-     * @class PictureView
+     * @class PictureThumbView
      * @param {HTMLElement} container
      * @param {Object} data
      * @constructor
      */
-    var PictureView = function(container, data) {
+    var PictureThumbView = function(container, data) {
 
         data = data || {};
 
-        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
-
         this.tag = 'li';
-        this.name = 'picture';
+
+        this._setName('picture-thumb');
+
+        BrowserItemView.call(this, container);
 
         this.counter = 0;
 
-        // Invoke View constructor
-        basePrototype.constructor.call(this, container);
+        this.path = data.path;
+        this.title = data.title || '';
+
+        this.render();
+    };
+
+    // Inherit from observable
+    PictureThumbView.prototype = Object.create(BrowserItemView.prototype);
+    PictureThumbView.prototype.constructor = PictureThumbView;
+
+    PictureThumbView.prototype.getTemplate = function(title, items) {
+
+        return '<div class="picture-thumb__title"></div>' +
+               '<div class="picture-thumb__image"></div>';
+    };
+
+    /**
+     * @inheritdoc
+     * @override
+     */
+    PictureThumbView.prototype.render = function() {
+
+        BrowserItemView.prototype.render.call(this);
+
+        this.elem('image').style.backgroundImage = 'url(images/' + this.path + ')';
+        
+        this.elem('title').innerHTML = this.title;
+
+        this.attachToContainer();
+
+        return this;
+    };
+
+    //==========================================================================================================================================================================
+
+    /**
+     * @class PictureFullView
+     * @param {HTMLElement} container
+     * @param {Object} data
+     * @constructor
+     */
+    var PictureFullView = function(container, data) {
+
+        data = data || {};
+
+        this.tag = 'li';
+
+        this._setName('picture-full');
+        
+        View.call(this, container);
+        
+        this.counter = 0;
 
         this.path = data.path;
         this.title = data.title || '';
@@ -352,25 +444,23 @@
     };
 
     // Inherit from observable
-    PictureView.prototype = Object.create(View.prototype);
-    PictureView.prototype.constructor = PictureView;
+    PictureFullView.prototype = Object.create(View.prototype);
+    PictureFullView.prototype.constructor = PictureFullView;
 
-    PictureView.prototype.getTemplate = function(title, items) {
+    PictureFullView.prototype.getTemplate = function(title, items) {
 
-        return '<div class="picture__title"></div>' +
-               '<div class="picture__counter"></div>' +
-               '<div class="picture__image"></div>';
+        return '<div class="picture-full__title"></div>' +
+               '<div class="picture-full__counter"></div>' +
+               '<div class="picture-full__image"></div>';
     };
 
     /**
      * @inheritdoc
      * @override
      */
-    PictureView.prototype.render = function() {
+    PictureFullView.prototype.render = function() {
 
-        // Invoke View constructor
-        var basePrototype = Object.getPrototypeOf(this.constructor.prototype);
-        basePrototype.render.call(this);
+        View.prototype.render.call(this);
 
         this.elem('image').style.backgroundImage = 'url(images/' + this.path + ')';
         this.elem('image').addEventListener('click', this._clickHandler.bind(this));
@@ -387,7 +477,7 @@
     /**
      * @param {MouseEvent} e
      */
-    PictureView.prototype._clickHandler = function(e) {
+    PictureFullView.prototype._clickHandler = function(e) {
 
         this.counter++;
         this.renderCounter();
@@ -396,7 +486,7 @@
     /**
      * Updates counter
      */
-    PictureView.prototype.renderCounter = function() {
+    PictureFullView.prototype.renderCounter = function() {
 
         this.elem('counter').innerHTML = this.counter;
     };

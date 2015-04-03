@@ -38,22 +38,23 @@ body {
 	justify-content: center;
 }
 
-/* PictureView */
-.picture {
+/* PictureThumbView */
+.picture-thumb {
 	position: relative;
 	display: inline-block;
 }
 
-.picture__title {
+.picture-thumb__title {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
 	font-size: 20px;
 	color: #FFF;
 	text-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+	text-transform: capitalize;
 }
 
-.picture__image {
+.picture-thumb__image {
 	width: 300px;
 	height: 200px;
 	background-position: 50% 50%;
@@ -61,7 +62,31 @@ body {
 	background-size: cover;
 }
 
-.picture__counter {
+
+/* PictureFullView */
+.picture-full {
+	position: relative;
+}
+
+.picture-full__title {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	font-size: 26px;
+	color: #FFF;
+	text-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+	text-transform: capitalize;
+}
+
+.picture-full__image {
+	width: 600px;
+	height: 400px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.picture-full__counter {
 	position: absolute;
 	top: 10px;
 	right: 10px;
