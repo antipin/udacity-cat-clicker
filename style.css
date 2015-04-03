@@ -38,6 +38,44 @@ body {
 	justify-content: center;
 }
 
+/* PopupView */
+.popup {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background-color: rgba(0,0,0, 0.5);
+}
+
+.popup__popup {
+	position: absolute;
+	background-color: #FFF;
+	padding: 10px;
+
+	width: 600px;
+	height: 400px;
+	top: 50%;
+	left: 50%;
+
+	margin-left: -300px;
+	margin-top: -200px;
+}
+
+.popup__close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background-color: #FFF;
+	color: #AAA;
+	font-size: 10px;
+	border-radius: 10px;
+	padding: 5px 10px;
+	z-index: 5;
+	cursor: pointer;	
+}
+
 /* PictureThumbView */
 .picture-thumb {
 	position: relative;
@@ -89,7 +127,7 @@ body {
 .picture-full__counter {
 	position: absolute;
 	top: 10px;
-	right: 10px;
+	left: 10px;
 	font-size: 16px
 	font-weight: bolder;
 	color: #FFF;

@@ -2,7 +2,8 @@
 
     'use strict';
 
-    var doc = window.document;
+    var doc = window.document,
+        body = doc.querySelector('body');
 
     /**
      * App init
@@ -79,12 +80,10 @@
      * @constructor
      */
     var App = function(container) {
-        
-        this.container = container;
 
-        var pictures = this.getPictureItems();
+        var pictures = this.getPictureItems(container);
 
-        this.browser = new BrowserView(this.container);
+        this.browser = new BrowserView();
 
         this.browser
             
@@ -96,15 +95,16 @@
             
             .addItems(pictures)
             
-            .toContainer();
+            .toContainer(container);
     };
 
     /**
+     * @param {HTMLElement} container
      * @return {Array.<BrowserItemData>}
      */
-    App.prototype.getPictureItems = function() {
+    App.prototype.getPictureItems = function(container) {
         
-        var pictures = this.container.getAttribute('data-pictures').split(',');
+        var pictures = container.getAttribute('data-pictures').split(',');
 
         return pictures.map(function(picture) {
 
@@ -120,15 +120,12 @@
     /**
      * Base class for views
      * @class View
-     * @param {HTMLElement} container
      * @constructor
      */
-    var View = function(container) {
+    var View = function() {
         
         // Invoke Observable constructor
         Observable.call(this);
-
-        this.container = container;
     };
 
     // Inherit from observable
@@ -172,18 +169,19 @@
      * Appends rendered HTMLElement to container
      * @return {View} instance
      */
-    View.prototype.toContainer = function() {
+    View.prototype.toContainer = function(container) {
 
         var domElem = this.buildDomElem();
 
         // View is being rendered for the first time
         if (!this.publishedDomElem) {
 
-            this.container.appendChild(domElem);
+            container.appendChild(domElem);
 
         } else {
 
-            this.container.replaceChild(domElem, this.publishedDomElem);
+            this.detachEventListeners(this.publishedDomElem);
+            container.replaceChild(domElem, this.publishedDomElem);
         }
 
         this.publishedDomElem = domElem;
@@ -212,15 +210,68 @@
         return domElem.querySelector(elemSelector);
     };
 
+    /**
+     * Event listeners attacher. Should be called after domElem was build
+     * @param {HTMLElement} domElem
+     * @return {View} instance
+     */
+    View.prototype.attachEventListeners = function(domElem) {
+        return this;
+    };
+
+    /**
+     * Event listeners detacher. Should be called before domElem is going to be removed from the DOM
+     * @param {HTMLElement} domElem
+     * @return {View} instance
+     */
+    View.prototype.detachEventListeners = function(domElem) {
+        return this;
+    };
+
+    //==========================================================================================================================================================================
+
+    /**
+     * @class PopupView
+     * @constructor
+     */
+    var PopupView = function(browser) {
+
+        this._setName('popup');
+
+        View.call(this);
+    };
+
+    // Inherit from View
+    PopupView.prototype = Object.create(View.prototype);
+    PopupView.prototype.constructor = PopupView;
+
+    /**
+     * Renders BrowserView view
+     * @param {string} title
+     * @param {string} items - HTML 
+     * @override
+     */
+    PopupView.prototype.getTemplate = function(title, items) {
+
+        return '<div class="popup__popup">' + 
+                   '<div class="popup__close">close</div>' + 
+                   '<div class="popup__content"></div>' + 
+               '</div>';
+    };
+
+    PopupView.prototype.setContent = function(content) {
+        
+        this.elem(this.publishedDomElem, 'content').appendChild(content);
+    };
+
     //==========================================================================================================================================================================
 
     /**
      * @class BrowserView
-     * @param {HTMLElement} container
      * @param {Array.<string>} pictures
      * @constructor
      */
-    var BrowserView = function(container) {
+    var BrowserView = function() {
 
         this._setName('browser');
 
@@ -229,7 +280,9 @@
          */
         this._items = [];
 
-        View.call(this, container);
+        this._itemsViews = [];
+
+        View.call(this);
     };
 
     // Inherit from View
@@ -264,7 +317,20 @@
 
         this._items = this._items.concat(items);
 
+        this._itemsViews = this._itemsViews.concat(this.buildItemsViews(items));
+
         return this;
+    };
+
+    BrowserView.prototype.buildItemsViews = function(items) {    
+    
+        return items.map(function(item) {
+
+            var ItemView = this.getItemConstructor(item.type, 'preview');
+            
+            return new ItemView(this, item.data);
+
+        }, this);
     };
 
     /**
@@ -275,8 +341,7 @@
      */
     BrowserView.prototype.getTemplate = function(title, items) {
 
-        return '<div class="browser__popup"></div>' +
-               '<ul class="browser__list"></ul>';
+        return '<ul class="browser__list"></ul>';
     };
 
     /**
@@ -291,6 +356,8 @@
         
         this.populateDomElemWithListItems(listDomElem);
 
+        this.attachEventListeners(domElem);
+
         return domElem;
     };
 
@@ -300,14 +367,9 @@
      */
     BrowserView.prototype.populateDomElemWithListItems = function(domElem) {
 
-        this._items.forEach(function(item) {
-
-            var ItemView = this.getItemConstructor(item.type, 'preview'),
-                item = new ItemView(domElem, item.data);
-
-            item.toContainer();
-
-        }, this);
+        this._itemsViews.forEach(function(itemView) {
+            itemView.toContainer(domElem);
+        });
     };
 
     /**
@@ -327,18 +389,32 @@
         return itemType[modesMap[mode]];
     };
 
+    
+    BrowserView.prototype.showFullView = function(itemData) {
+
+        var ItemFullView = this.getItemConstructor('picture', 'fullview'),
+            itemFullView = new ItemFullView(itemData),
+            popup = new PopupView();
+
+        popup.toContainer(body);
+
+        popup.setContent(itemFullView.buildDomElem());
+    }
+
     //==========================================================================================================================================================================
 
     /**
      * @class BrowserItemView
-     * @param {HTMLElement} container
+     * @param {BrowserView} browser
      * @constructor
      */
-    var BrowserItemView = function(container) {
+    var BrowserItemView = function(browser) {
 
         this._setName('browser-item');
 
-        View.call(this, container);
+        View.call(this);
+
+        this.browser = browser;
     };
 
     // Inherit from View
@@ -368,11 +444,11 @@
 
     /**
      * @class PictureThumbView
-     * @param {HTMLElement} container
+     * @param {BrowserView} browser
      * @param {Object} data
      * @constructor
      */
-    var PictureThumbView = function(container, data) {
+    var PictureThumbView = function(browser, data) {
 
         data = data || {};
 
@@ -380,12 +456,11 @@
 
         this._setName('picture-thumb');
 
-        BrowserItemView.call(this, container);
+        BrowserItemView.call(this, browser);
 
         this.counter = 0;
 
-        this.path = data.path;
-        this.title = data.title || '';
+        this.data = data;
     };
 
     // Inherit from observable
@@ -406,30 +481,49 @@
 
         var domElem = BrowserItemView.prototype.buildDomElem.call(this);
 
-        this.elem(domElem, 'image').style.backgroundImage = 'url(images/' + this.path + ')';
+        this.elem(domElem, 'image').style.backgroundImage = 'url(images/' + this.data.path + ')';
         
-        this.elem(domElem, 'title').innerHTML = this.title;
+        this.elem(domElem, 'title').innerHTML = this.data.title || '';
+
+        this.attachEventListeners(domElem);
 
         return domElem;
     };
+
+    /**
+     * @param {MouseEvent} e
+     */
+    PictureThumbView.prototype._clickHandler = function(e) {
+        this.browser.showFullView(this.data);
+    };
+
+    PictureThumbView.prototype.attachEventListeners = function(domElem) {
+
+        this._bindedClickHandler = this._clickHandler.bind(this);
+
+        this.elem(domElem, 'image').addEventListener('click', this._bindedClickHandler);
+        return this;
+    };
+
+    PictureThumbView.prototype.removeEventListeners = function(domElem) {
+        this.elem(domElem, 'image').removeEventListener('click', this._bindedClickHandler);
+        return this;
+    };    
 
     //==========================================================================================================================================================================
 
     /**
      * @class PictureFullView
-     * @param {HTMLElement} container
      * @param {Object} data
      * @constructor
      */
-    var PictureFullView = function(container, data) {
+    var PictureFullView = function(data) {
 
         data = data || {};
 
-        this.tag = 'li';
-
         this._setName('picture-full');
         
-        View.call(this, container);
+        View.call(this);
         
         this.counter = 0;
 
@@ -457,11 +551,11 @@
         var domElem = View.prototype.buildDomElem.call(this);
 
         this.elem(domElem, 'image').style.backgroundImage = 'url(images/' + this.path + ')';
-        this.elem(domElem, 'image').addEventListener('click', this._clickHandler.bind(this));
-        
         this.elem(domElem, 'title').innerHTML = this.title;
 
         this.updateCounterDomElem(domElem);
+
+        this.attachEventListeners(domElem);
 
         return domElem;
     };
@@ -482,5 +576,18 @@
 
         this.elem(domElem, 'counter').innerHTML = this.counter;
     };
+
+    PictureFullView.prototype.attachEventListeners = function(domElem) {
+
+        this._bindedClickHandler = this._clickHandler.bind(this);
+
+        this.elem(domElem, 'image').addEventListener('click', this._bindedClickHandler);
+        return this;
+    };
+
+    PictureFullView.prototype.removeEventListeners = function(domElem) {
+        this.elem(domElem, 'image').removeEventListener('click', this._bindedClickHandler);
+        return this;
+    };    
 
 }(window));
