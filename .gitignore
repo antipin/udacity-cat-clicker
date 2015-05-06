@@ -11,5 +11,8 @@
 # proportion of contributors will probably not be using SublimeText
 *.sublime-project
 
-# Mac 
+### WebStorm ###
+.idea
+
+### Mac ###
 .DS_Store
