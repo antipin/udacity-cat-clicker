@@ -1,0 +1,11 @@
+{
+  "name": "cat_clicker",
+  "version": "1.0.0",
+  "description": "Udacity javascript design patterns project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexander I. Antipin",
+  "license": "ISC"
+}
