@@ -9,6 +9,7 @@
   "author": "Alexander I. Antipin",
   "license": "ISC",
   "devDependencies": {
+    "awesome-typescript-loader": "^0.5.4",
     "webpack": "^1.9.6"
   }
 }
