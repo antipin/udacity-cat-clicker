@@ -1,3 +1,5 @@
+require('./browser.css');
+
 declare var document: Document;
 
 import {View} from '../view/view';

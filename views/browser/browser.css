@@ -1,0 +1,19 @@
+.view-browser {
+    position: relative;
+}
+
+.view-browser__thumbs-list {
+    position: relative;
+    width: 300px;
+    z-index: 1;
+    overflow: auto;
+}
+
+.view-browser__overview {
+    position: fixed;
+    top: 0;
+    left: 300px;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+}
