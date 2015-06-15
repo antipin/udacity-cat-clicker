@@ -6,7 +6,7 @@ interface EventDeclaration {
     callback(): void;
 }
 
-var BEM_DELIMITER = '_';
+var BEM_DELIMITER = '__';
 
 export class View {
 

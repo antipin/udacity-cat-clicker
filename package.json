@@ -11,5 +11,9 @@
   "devDependencies": {
     "awesome-typescript-loader": "^0.5.4",
     "webpack": "^1.9.6"
+  },
+  "dependencies": {
+    "css-loader": "^0.14.5",
+    "style-loader": "^0.12.3"
   }
 }

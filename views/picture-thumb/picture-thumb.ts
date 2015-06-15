@@ -1,3 +1,5 @@
+require('./picture-thumb.css');
+
 declare var document: Document;
 
 import {View} from '../view/view'
@@ -20,16 +22,14 @@ export class ViewPictureThumb extends View {
     buildBlock(data?: any) {
 
         var rootElement = super.buildBlock(data),
-            nameElement = this.buildElem('name', 'span'),
-            urlElement = this.buildElem('image', 'img'),
+            nameElement = this.buildElem('title', 'span'),
             counterElement = this.buildElem('counter', 'span');
 
+        rootElement.style.backgroundImage = 'url(' + data.url + ')';
         nameElement.textContent = data.name;
-        urlElement.src = data.url;
         counterElement.textContent = data.counter;
 
         rootElement.appendChild(nameElement);
-        rootElement.appendChild(urlElement);
         rootElement.appendChild(counterElement);
 
         this.attachEventsTo(rootElement);

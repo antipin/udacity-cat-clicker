@@ -12,6 +12,9 @@ module.exports = {
         loaders: [{
             test: /\.ts$/,
             loader: 'awesome-typescript-loader'
+        }, {
+            test: /\.css$/,
+            loader: 'style-loader!css-loader'
         }]
     },
     output: {
