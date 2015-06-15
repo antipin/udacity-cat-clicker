@@ -9,7 +9,6 @@ export class ModelPictureCountable extends ModelPicture {
     }
 
     set counter(value: number) {
-        console.log('|-> value = ', value);
         this._counter = value;
     }
 
