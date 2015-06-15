@@ -2,9 +2,9 @@ declare var document: Document;
 
 import {View} from '../view/view'
 
-export class ViewPicturePreview extends View {
+export class ViewPictureThumb extends View {
 
-    name = 'view-picture-preview';
+    name = 'view-picture-thumb';
 
     events = [
         {
@@ -17,7 +17,7 @@ export class ViewPicturePreview extends View {
         }
     ];
 
-    buildElem(data: any) {
+    buildElem(data?: any) {
 
         var rootElement = super.buildElem(data),
             nameElement = document.createElement('span'),

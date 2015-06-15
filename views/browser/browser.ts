@@ -1,7 +1,8 @@
 declare var document: Document;
 
 import {View} from '../view/view';
-import {ViewPicturePreview} from '../picture-preview/picture-preview'
+import {ViewPictureThumb} from '../picture-thumb/picture-thumb';
+import {ViewPictureOverview} from '../picture-overview/picture-overview';
 
 export class ViewBrowser extends View {
 
@@ -11,20 +12,23 @@ export class ViewBrowser extends View {
 
         var rootElement = super.buildElem(items),
             listElement = document.createElement('div'),
-            previewElement = document.createElement('div');
+            overviewElement = document.createElement('div'),
+            viewOverview;
 
+        // Create thumb items list
         if (Array.isArray(items)) {
             items.forEach((itemData) => {
-
-                var view = this.createSubView(new ViewPicturePreview(listElement, itemData)),
-                    viewElem = view.buildElem(itemData);
-
-                listElement.appendChild(viewElem);
+                var view = this.createSubView(new ViewPictureThumb(listElement, itemData));
+                listElement.appendChild(view.buildElem(itemData));
             });
         }
 
+        // Create overview item
+        viewOverview = this.createSubView(new ViewPictureOverview(overviewElement));
+        overviewElement.appendChild(viewOverview.buildElem());
+
         rootElement.appendChild(listElement);
-        rootElement.appendChild(previewElement);
+        rootElement.appendChild(overviewElement);
 
         this.attachEventsTo(rootElement);
 

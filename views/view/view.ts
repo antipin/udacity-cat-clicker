@@ -35,7 +35,7 @@ export class View {
         return this._childViews;
     }
 
-    constructor(container, data) {
+    constructor(container, data?) {
         this.events = this.events || [];
         this.data = data || {};
         this._currentElem = null;
@@ -76,7 +76,7 @@ export class View {
      * Should be implemented at descendant classes
      * @param data
      */
-    buildElem(data: any): HTMLElement {
+    buildElem(data?: any): HTMLElement {
         this._currentElem = document.createElement(this.tag);
         this._currentElem.classList.add(this.name);
         return this._currentElem;
