@@ -5,6 +5,10 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
     background-size: cover;
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+              user-select: none;
+    cursor: pointer;
 }
 
 .view-picture-thumb__title {
