@@ -8,9 +8,9 @@ export class ViewBrowser extends View {
 
     name = 'view-browser';
 
-    buildElem(items: any) {
+    buildBlock(items: any) {
 
-        var rootElement = super.buildElem(items),
+        var rootElement = super.buildBlock(items),
             listElement = document.createElement('div'),
             overviewElement = document.createElement('div'),
             viewOverview;
@@ -19,13 +19,13 @@ export class ViewBrowser extends View {
         if (Array.isArray(items)) {
             items.forEach((itemData) => {
                 var view = this.createSubView(new ViewPictureThumb(listElement, itemData));
-                listElement.appendChild(view.buildElem(itemData));
+                listElement.appendChild(view.buildBlock(itemData));
             });
         }
 
         // Create overview item
         viewOverview = this.createSubView(new ViewPictureOverview(overviewElement));
-        overviewElement.appendChild(viewOverview.buildElem());
+        overviewElement.appendChild(viewOverview.buildBlock());
 
         rootElement.appendChild(listElement);
         rootElement.appendChild(overviewElement);

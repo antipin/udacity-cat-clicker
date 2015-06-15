@@ -76,7 +76,7 @@ export class View {
      * Should be implemented at descendant classes
      * @param data
      */
-    buildElem(data?: any): HTMLElement {
+    buildBlock(data?: any): HTMLElement {
         this._currentElem = document.createElement(this.tag);
         this._currentElem.classList.add(this.name);
         return this._currentElem;
@@ -133,7 +133,7 @@ export class View {
             this.detachEventsFrom(this._currentElem);
         }
 
-        this._currentElem = this.buildElem(data);
+        this._currentElem = this.buildBlock(data);
     }
 
     /**

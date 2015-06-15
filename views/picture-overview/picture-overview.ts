@@ -17,9 +17,9 @@ export class ViewPictureOverview extends View {
         }
     ];
 
-    buildElem(data: any) {
+    buildBlock(data: any) {
 
-        var rootElement = super.buildElem(data);
+        var rootElement = super.buildBlock(data);
 
         rootElement.textContent = 'preview';
 
