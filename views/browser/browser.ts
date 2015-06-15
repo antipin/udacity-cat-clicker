@@ -11,15 +11,15 @@ export class ViewBrowser extends View {
     buildBlock(items: any) {
 
         var rootElement = super.buildBlock(items),
-            listElement = document.createElement('div'),
-            overviewElement = document.createElement('div'),
+            thumbsListElement = this.buildElem('thumbs-list'),
+            overviewElement = this.buildElem('overview'),
             viewOverview;
 
         // Create thumb items list
         if (Array.isArray(items)) {
             items.forEach((itemData) => {
-                var view = this.createSubView(new ViewPictureThumb(listElement, itemData));
-                listElement.appendChild(view.buildBlock(itemData));
+                var view = this.createSubView(new ViewPictureThumb(thumbsListElement, itemData));
+                thumbsListElement.appendChild(view.buildBlock(itemData));
             });
         }
 
@@ -27,7 +27,7 @@ export class ViewBrowser extends View {
         viewOverview = this.createSubView(new ViewPictureOverview(overviewElement));
         overviewElement.appendChild(viewOverview.buildBlock());
 
-        rootElement.appendChild(listElement);
+        rootElement.appendChild(thumbsListElement);
         rootElement.appendChild(overviewElement);
 
         this.attachEventsTo(rootElement);

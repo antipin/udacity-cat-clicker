@@ -6,6 +6,8 @@ interface EventDeclaration {
     callback(): void;
 }
 
+var BEM_DELIMITER = '_';
+
 export class View {
 
     public name: string = 'view';
@@ -80,6 +82,12 @@ export class View {
         this._currentElem = document.createElement(this.tag);
         this._currentElem.classList.add(this.name);
         return this._currentElem;
+    }
+
+    buildElem(elemName: string, tag?: string) {
+        var elem = document.createElement(tag || 'div');
+        elem.classList.add(this.name + BEM_DELIMITER + elemName);
+        return elem;
     }
 
     /**

@@ -20,9 +20,9 @@ export class ViewPictureThumb extends View {
     buildBlock(data?: any) {
 
         var rootElement = super.buildBlock(data),
-            nameElement = document.createElement('span'),
-            urlElement = document.createElement('img'),
-            counterElement = document.createElement('span');
+            nameElement = this.buildElem('name', 'span'),
+            urlElement = this.buildElem('image', 'img'),
+            counterElement = this.buildElem('counter', 'span');
 
         nameElement.textContent = data.name;
         urlElement.src = data.url;
