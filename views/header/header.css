@@ -1,0 +1,15 @@
+.view-header {
+    position: fixed;
+    left: 300px;
+    top: 0;
+    right: 0;
+    height: 100px;
+}
+
+.view-header__logo {
+    background: url('./header__logo.svg') no-repeat 50% 50%;
+    background-size: contain;
+    width: 400px;
+    height: 40px;
+    margin: 40px;
+}

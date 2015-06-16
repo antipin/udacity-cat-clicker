@@ -1,17 +1,22 @@
+import {ViewHeader} from './views/header/header';
 import {ViewBrowser} from './views/browser/browser';
+import {ViewPictureThumb} from './views/picture-thumb/picture-thumb';
 import {CollectionPicturesCountable} from './collections/pictures-countable/pictures-countable';
 
 class Controller {
 
     viewBrowser: ViewBrowser;
-
-    viewActiveThumb;
+    viewHeader: ViewHeader;
+    viewActiveThumb: ViewPictureThumb;
 
     catsCollection: any;
 
     init(appContainer, items) {
 
         this.catsCollection = new CollectionPicturesCountable(items);
+
+        this.viewHeader = new ViewHeader(appContainer)
+        this.viewHeader.render();
 
         this.viewBrowser = new ViewBrowser(appContainer, this.catsCollection.list());
         this.viewBrowser.render();
