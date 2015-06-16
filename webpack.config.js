@@ -14,7 +14,11 @@ module.exports = {
             loader: 'awesome-typescript-loader'
         }, {
             test: /\.css$/,
-            loader: 'style-loader!css-loader'
+            loader: [
+                'style-loader',
+                'css-loader',
+                'autoprefixer-loader?browsers=last 2 versions'
+            ].join('!')
         }]
     },
     output: {
