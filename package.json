@@ -11,6 +11,9 @@
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
     "awesome-typescript-loader": "^0.5.4",
+    "file-loader": "^0.8.4",
+    "image-webpack-loader": "^1.6.1",
+    "imagemin": "^3.2.0",
     "webpack": "^1.9.6"
   },
   "dependencies": {
