@@ -14,9 +14,9 @@ export class View {
 
     public tag: string = 'div';
 
-    public events: Array<EventDeclaration>;
-
     public data: any;
+
+    public events: Array<EventDeclaration>;
 
     /**
      * Link to elem that is built with this._rebuildCurrentElem()
@@ -57,7 +57,7 @@ export class View {
      */
     render() {
 
-        this._rebuildCurrentElem(this.data);
+        this._rebuildCurrentElem();
 
         // Rendering this view for the first time
         if (this._publishedElem === null) {
@@ -76,9 +76,8 @@ export class View {
     /**
      * Returns elem
      * Should be implemented at descendant classes
-     * @param data
      */
-    buildBlock(data?: any): HTMLElement {
+    buildBlock(): HTMLElement {
         this._currentElem = document.createElement(this.tag);
         this._currentElem.classList.add(this.name);
         return this._currentElem;
@@ -88,6 +87,10 @@ export class View {
         var elem = document.createElement(tag || 'div');
         elem.classList.add(this.name + BEM_DELIMITER + elemName);
         return elem;
+    }
+
+    setData(data) {
+        this.data = data;
     }
 
     /**
@@ -129,10 +132,9 @@ export class View {
 
     /**
      * Completely rebuilds views elem (including child views) and puts it to this._currentElem
-     * @param data
      * @private
      */
-    private _rebuildCurrentElem(data: any) {
+    private _rebuildCurrentElem() {
 
         this._destroyChildViews();
 
@@ -141,7 +143,7 @@ export class View {
             this.detachEventsFrom(this._currentElem);
         }
 
-        this._currentElem = this.buildBlock(data);
+        this._currentElem = this.buildBlock();
     }
 
     /**

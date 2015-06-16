@@ -1,0 +1,33 @@
+.view-picture-overview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 640px;
+    height: 500px;
+    margin-top: -250px;
+    margin-left: -330px;
+}
+
+.view-picture-overview__title {
+    height: 100px;
+    font-size: 60px;
+    line-height: 100px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.view-picture-overview__image {
+    height: 400px;
+    width: 640px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    user-select: none;
+    cursor: pointer;
+}
+
+.view-picture-overview__counter {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

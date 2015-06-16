@@ -1,5 +1,8 @@
+require('./picture-overview.css');
+
 declare var document: Document;
 
+import {controller} from '../../controller';
 import {View} from '../view/view'
 
 export class ViewPictureOverview extends View {
@@ -10,21 +13,31 @@ export class ViewPictureOverview extends View {
         {
             event: 'click',
             selector: '',
-            callback: () => {
-                this.data.counter++;
-                this.render();
-            }
+            callback: this.increaseCounter.bind(this)
         }
     ];
 
-    buildBlock(data: any) {
+    buildBlock() {
 
-        var rootElement = super.buildBlock(data);
+        var rootElement = super.buildBlock(),
+            nameElement = this.buildElem('title'),
+            imageElement = this.buildElem('image'),
+            counterElement = this.buildElem('counter');
 
-        rootElement.textContent = 'preview';
+        nameElement.textContent = this.data.name;
+        imageElement.style.backgroundImage = 'url(' + this.data.url + ')';
+        counterElement.textContent = this.data.counter;
+
+        rootElement.appendChild(nameElement);
+        rootElement.appendChild(imageElement);
+        rootElement.appendChild(counterElement);
 
         this.attachEventsTo(rootElement);
 
         return rootElement;
+    }
+
+    increaseCounter() {
+        controller.increaseCounter(this);
     }
 }
