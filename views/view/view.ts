@@ -1,8 +1,8 @@
 declare var document: Document;
 
 interface EventDeclaration {
+    elem?: string;
     event: string;
-    selector: string;
     callback(): void;
 }
 
@@ -89,6 +89,10 @@ export class View {
         return elem;
     }
 
+    elem(viewElem, elemName) {
+        return viewElem.querySelector(this._buildElemSelector(elemName));
+    }
+
     setData(data) {
         this.data = data;
     }
@@ -109,7 +113,7 @@ export class View {
      */
     attachEventsTo(node: HTMLElement) {
         this.events.forEach((eventDecl) => {
-            var targetNode = eventDecl.selector ? node.querySelector(eventDecl.selector) : node;
+            var targetNode = eventDecl.elem ? this.elem(node, eventDecl.elem) : node;
             targetNode.addEventListener(eventDecl.event, eventDecl.callback);
         });
     }
@@ -121,7 +125,7 @@ export class View {
      */
     detachEventsFrom(node: HTMLElement) {
         this.events.forEach((eventDecl) => {
-            var targetNode = eventDecl.selector ? node.querySelector(eventDecl.selector) : node;
+            var targetNode = eventDecl.elem ? this.elem(node, eventDecl.elem) : node;
             targetNode.removeEventListener(eventDecl.event, eventDecl.callback);
         });
     }
@@ -153,6 +157,10 @@ export class View {
         this._childViews.forEach((childView) => {
             childView._updatePublishedElem();
         });
+    }
+
+    private _buildElemSelector(elemName) {
+        return '.' + this.name + BEM_DELIMITER + elemName;
     }
 
     /**

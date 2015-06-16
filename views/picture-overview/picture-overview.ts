@@ -10,7 +10,7 @@ export class ViewPictureOverview extends View {
     events = [
         {
             event: 'click',
-            selector: '',
+            elem: 'image',
             callback: this.increaseCounter.bind(this)
         }
     ];

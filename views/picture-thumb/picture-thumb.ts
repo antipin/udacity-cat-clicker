@@ -10,7 +10,6 @@ export class ViewPictureThumb extends View {
     events = [
         {
             event: 'click',
-            selector: '',
             callback: this.setAsActive.bind(this)
         }
     ];
