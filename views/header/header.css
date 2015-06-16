@@ -17,8 +17,7 @@
 
 .view-header__counter {
     display: inline-block;
-    height: 40px;
-    line-height: 40px;
-    vertical-align: 9px;
-    margin-left: 20px;
+    vertical-align: top;
+    font-size: 1.5em;
+    color: #9e0012;
 }

@@ -1,7 +1,5 @@
 require('./browser.css');
 
-declare var document: Document;
-
 import {controller} from '../../controller';
 import {View} from '../view/view';
 import {ViewPictureThumb} from '../picture-thumb/picture-thumb';

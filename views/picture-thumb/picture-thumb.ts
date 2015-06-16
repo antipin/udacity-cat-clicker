@@ -1,7 +1,5 @@
 require('./picture-thumb.css');
 
-declare var document: Document;
-
 import {controller} from '../../controller'
 import {View} from '../view/view'
 

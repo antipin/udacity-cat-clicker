@@ -28,7 +28,7 @@
 }
 
 .view-picture-overview__counter {
-    position: absolute;
-    top: 0;
-    right: 0;
+    font-size: 0.6em;
+    color: #9e0012;
+    padding-left: 5px;
 }

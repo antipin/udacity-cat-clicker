@@ -1,7 +1,5 @@
 require('./picture-overview.css');
 
-declare var document: Document;
-
 import {controller} from '../../controller';
 import {View} from '../view/view'
 
@@ -22,7 +20,7 @@ export class ViewPictureOverview extends View {
         var rootElement = super.buildBlock(),
             nameElement = this.buildElem('title'),
             imageElement = this.buildElem('image'),
-            counterElement = this.buildElem('counter');
+            counterElement = this.buildElem('counter', 'sup');
 
         if (this.data) {
             nameElement.textContent = this.data.name;
@@ -30,9 +28,10 @@ export class ViewPictureOverview extends View {
             counterElement.textContent = this.data.counter;
         }
 
+        nameElement.appendChild(counterElement)
+
         rootElement.appendChild(nameElement);
         rootElement.appendChild(imageElement);
-        rootElement.appendChild(counterElement);
 
         this.attachEventsTo(rootElement);
 
