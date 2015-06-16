@@ -24,6 +24,7 @@
     background-size: cover;
     user-select: none;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .view-picture-overview__counter {
