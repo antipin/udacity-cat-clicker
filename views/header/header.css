@@ -3,13 +3,22 @@
     left: 300px;
     top: 0;
     right: 0;
-    height: 100px;
+    height: 50px;
+    padding: 40px;
 }
 
 .view-header__logo {
+    display: inline-block;
     background: url('./header__logo.svg') no-repeat 50% 50%;
     background-size: contain;
     width: 400px;
     height: 40px;
-    margin: 40px;
+}
+
+.view-header__counter {
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: 9px;
+    margin-left: 20px;
 }

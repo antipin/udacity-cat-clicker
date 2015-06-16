@@ -24,9 +24,11 @@ export class ViewPictureOverview extends View {
             imageElement = this.buildElem('image'),
             counterElement = this.buildElem('counter');
 
-        nameElement.textContent = this.data.name;
-        imageElement.style.backgroundImage = 'url(' + this.data.url + ')';
-        counterElement.textContent = this.data.counter;
+        if (this.data) {
+            nameElement.textContent = this.data.name;
+            imageElement.style.backgroundImage = 'url(' + this.data.url + ')';
+            counterElement.textContent = this.data.counter;
+        }
 
         rootElement.appendChild(nameElement);
         rootElement.appendChild(imageElement);

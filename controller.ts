@@ -31,9 +31,14 @@ class Controller {
 
     increaseCounter(viewOverview) {
         var data = viewOverview.data;
+
         data.counter++;
+
         viewOverview.render();
         this.viewActiveThumb.render();
+
+        this.viewHeader.viewCounterTotal.setData(this.catsCollection.total());
+        this.viewHeader.viewCounterTotal.render()
     }
 }
 

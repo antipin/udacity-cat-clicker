@@ -21,7 +21,9 @@ export class CollectionPicturesCountable {
         return this._itemsStorage;
     }
 
-    getItem(index: number): PictureCountableData {
-        return this._itemsStorage[index];
+    total(): number {
+        return this._itemsStorage.reduce((total, item) => {
+            return total + item.counter;
+        }, 0);
     }
 }

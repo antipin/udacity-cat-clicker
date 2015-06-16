@@ -39,7 +39,7 @@ export class View {
 
     constructor(container, data?) {
         this.events = this.events || [];
-        this.data = data || {};
+        this.data = data || null;
         this._currentElem = null;
         this._publishedElem = null;
         this._childViews = [];
@@ -101,10 +101,6 @@ export class View {
     createSubView(viewInstance): View {
         this._childViews.push(viewInstance);
         return viewInstance;
-    }
-
-    getChildView(index: number): View{
-        return this._childViews[index];
     }
 
     /**

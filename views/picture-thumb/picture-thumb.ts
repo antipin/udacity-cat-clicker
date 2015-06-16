@@ -24,9 +24,11 @@ export class ViewPictureThumb extends View {
             nameElement = this.buildElem('title', 'span'),
             counterElement = this.buildElem('counter', 'span');
 
-        rootElement.style.backgroundImage = 'url(' + this.data.url + ')';
-        nameElement.textContent = this.data.name;
-        counterElement.textContent = this.data.counter;
+        if (this.data) {
+            rootElement.style.backgroundImage = 'url(' + this.data.url + ')';
+            nameElement.textContent = this.data.name;
+            counterElement.textContent = this.data.counter;
+        }
 
         infoElement.appendChild(nameElement);
         infoElement.appendChild(counterElement);
