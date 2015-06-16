@@ -5,28 +5,36 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
     background-size: cover;
-    -webkit-touch-callout: none;
-      -webkit-user-select: none;
-              user-select: none;
+    user-select: none;
     cursor: pointer;
+    transition: outline-offset 0.1s ease-in-out;
+}
+
+.view-picture-thumb:hover {
+    outline: 6px solid rgba(0, 0, 0, 0.3);
+    outline-offset: -6px;
+}
+
+.view-picture-thumb__info {
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+    left: 0;
+    padding: 30px 10px 10px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0,0,0,0));
 }
 
 .view-picture-thumb__title {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
     font-size: 20px;
     color: #FFF;
-    text-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     text-transform: capitalize;
+    text-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
 .view-picture-thumb__counter {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
+    float: right;
     font-size: 20px;
     color: #FFF;
-    text-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+    text-shadow: 0 0 5px rgba(0,0,0,0.3);
     text-transform: capitalize;
 }

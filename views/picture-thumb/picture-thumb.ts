@@ -10,7 +10,8 @@ export class ViewPictureThumb extends View {
 
     buildBlock(data?: any) {
 
-        var rootElement = super.buildBlock(data),
+        var rootElement = super.buildBlock(),
+            infoElement = this.buildElem('info'),
             nameElement = this.buildElem('title', 'span'),
             counterElement = this.buildElem('counter', 'span');
 
@@ -18,8 +19,10 @@ export class ViewPictureThumb extends View {
         nameElement.textContent = data.name;
         counterElement.textContent = data.counter;
 
-        rootElement.appendChild(nameElement);
-        rootElement.appendChild(counterElement);
+        infoElement.appendChild(nameElement);
+        infoElement.appendChild(counterElement);
+
+        rootElement.appendChild(infoElement);
 
         this.attachEventsTo(rootElement);
 
