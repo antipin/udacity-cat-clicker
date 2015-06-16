@@ -53,7 +53,6 @@ export class View {
 
     /**
      * Renders views elem and attaches/updates it to DOM
-     * @param data
      */
     render() {
 
