@@ -1,11 +1,11 @@
-require('./picture-overview.css');
+require('./picture-viewer.css');
 
 import {controller} from '../../controller';
 import {View} from '../view/view'
 
-export class ViewPictureOverview extends View {
+export class ViewPictureViewer extends View {
 
-    name = 'view-picture-overview';
+    name = 'view-picture-viewer';
 
     events = [
         {

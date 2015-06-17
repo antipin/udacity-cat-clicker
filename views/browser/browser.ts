@@ -3,14 +3,13 @@ require('./browser.css');
 import {controller} from '../../controller';
 import {View} from '../view/view';
 import {ViewPictureThumb} from '../picture-thumb/picture-thumb';
-import {ViewPictureOverview} from '../picture-overview/picture-overview';
-import {ViewPictureEdit} from '../picture-edit/picture-edit';
+import {ViewPicture} from '../picture/picture';
 
 export class ViewBrowser extends View {
 
     name = 'view-browser';
 
-    viewPictureOverview: View;
+    viewPicture: ViewPicture;
 
     buildBlock() {
 
@@ -28,7 +27,7 @@ export class ViewBrowser extends View {
         }
 
         // Create overview item
-        this.viewPictureOverview = this.createSubView(new ViewPictureOverview(overviewElement));
+        this.viewPicture = <ViewPicture>this.createSubView(new ViewPicture(overviewElement));
 
         rootElement.appendChild(thumbsListElement);
         rootElement.appendChild(overviewElement);

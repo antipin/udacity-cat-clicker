@@ -1,8 +1,8 @@
-.view-picture-overview {
+.view-picture-viewer {
     position: relative;
 }
 
-.view-picture-overview__name {
+.view-picture-viewer__name {
     height: 100px;
     font-size: 60px;
     line-height: 100px;
@@ -10,7 +10,7 @@
     text-transform: capitalize;
 }
 
-.view-picture-overview__image {
+.view-picture-viewer__image {
     height: 400px;
     width: 640px;
     background-position: 50% 50%;
@@ -21,7 +21,7 @@
     border-radius: 10px;
 }
 
-.view-picture-overview__counter {
+.view-picture-viewer__counter {
     font-size: 0.6em;
     color: #9e0012;
     padding-left: 5px;

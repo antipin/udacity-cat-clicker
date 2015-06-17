@@ -1,0 +1,22 @@
+.view-picture {
+    position: relative;
+    height: 100%;
+}
+
+.view-picture__edit-button,
+.view-picture__save-button {
+    user-select: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 10;
+    line-height: 24px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #888;
+    border-radius: 15px;
+    font-size: 12px;
+}

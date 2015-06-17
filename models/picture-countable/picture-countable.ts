@@ -8,7 +8,10 @@ export class ModelPictureCountable extends ModelPicture {
         return this._counter
     }
 
-    set counter(value: number) {
+    set counter(value: any) {
+        value = parseInt(value, 10);
+        value = value < 0 ? 0 : value;
+        value = isNaN(value) ? 0 : value;
         this._counter = value;
     }
 

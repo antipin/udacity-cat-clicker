@@ -25,8 +25,9 @@ class Controller {
     setActive(viewThumb) {
         var data = viewThumb.data;
         this.viewActiveThumb = viewThumb;
-        this.viewBrowser.viewPictureOverview
+        this.viewBrowser.viewPicture
             .setData(data)
+            .setState('mode', 'view')
             .render();
     }
 
@@ -38,8 +39,23 @@ class Controller {
         viewOverview.render();
         this.viewActiveThumb.render();
 
-        this.viewHeader.viewCounterTotal.setData(this.catsCollection.total());
-        this.viewHeader.viewCounterTotal.render()
+        this.viewHeader.viewCounterTotal
+            .setData(this.catsCollection.total())
+            .render();
+    }
+
+    savePicture(viewPicture, newData) {
+
+        var data = viewPicture.data;
+
+        data.name = newData.name;
+        data.counter = newData.counter;
+
+        viewPicture.switchMode('view');
+        this.viewActiveThumb.render();
+        this.viewHeader.viewCounterTotal
+            .setData(this.catsCollection.total())
+            .render();
     }
 }
 
