@@ -1,6 +1,30 @@
 .view-picture {
-    position: relative;
+    position: absolute;
     height: 100%;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+
+.view-picture_mode_editor {
+    transform: rotateY(180deg);
+}
+
+.view-picture__viewer,
+.view-picture__editor {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.view-picture__viewer {
+    transform: rotateY(0deg);
+}
+
+.view-picture__editor {
+    transform: rotateY(180deg);
 }
 
 .view-picture__edit-button,

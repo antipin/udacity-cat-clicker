@@ -18,4 +18,5 @@
     height: 400px;
     margin-top: -200px;
     margin-left: -170px;
+    perspective: 800px;
 }

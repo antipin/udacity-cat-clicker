@@ -99,6 +99,10 @@ export class View {
         return elem;
     }
 
+    rootNode() {
+        return this._publishedElem;
+    }
+
     elem(elemName, viewElem?) {
         viewElem = viewElem || this._publishedElem;
         return viewElem.querySelector(this._buildElemSelector(elemName));

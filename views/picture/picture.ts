@@ -37,37 +37,10 @@ export class ViewPicture extends View {
 
     buildBlock() {
 
-        var rootElement = super.buildBlock(),
-            editButton,
-            saveButton,
-            innerElement;
+        var rootElement = super.buildBlock();
 
-        switch (this.state.mode) {
-
-            case 'view':
-                innerElement = this.buildElem('viewer');
-                editButton = this.buildElem('edit-button');
-                editButton.textContent = 'Edit';
-                innerElement.appendChild(editButton);
-
-                this.viewPictureViewer = <ViewPictureViewer>this.createSubView(new ViewPictureViewer(innerElement, this.data));
-                this.viewPictureViewer.render();
-
-                rootElement.appendChild(innerElement);
-                break;
-
-            case 'edit':
-                innerElement = this.buildElem('editor');
-                saveButton = this.buildElem('save-button');
-                saveButton.textContent = 'Save';
-                innerElement.appendChild(saveButton);
-
-                this.viewPictureEditor = <ViewPictureEditor>this.createSubView(new ViewPictureEditor(innerElement, this.data));
-                this.viewPictureEditor.render();
-
-                rootElement.appendChild(innerElement);
-                break;
-        }
+        rootElement.appendChild(this._buildViewer());
+        rootElement.appendChild(this._buildEditor());
 
         this.attachEventsTo(rootElement);
 
@@ -75,11 +48,49 @@ export class ViewPicture extends View {
     }
 
     switchMode(mode) {
-        this.setState('mode', mode)
-            .render();
+
+        var rootNode = this.rootNode()
+
+        if (mode === 'edit') {
+            rootNode.classList.add('view-picture_mode_editor');
+        } else {
+            rootNode.classList.remove('view-picture_mode_editor');
+        }
+
+        this.viewPictureViewer.render();
     }
 
     save() {
         controller.savePicture(this, this.viewPictureEditor.getData());
+    }
+
+    private _buildViewer() {
+
+        var editButton,
+            viewerElement;
+
+        viewerElement = this.buildElem('viewer');
+        editButton = this.buildElem('edit-button');
+        editButton.textContent = 'Edit';
+        viewerElement.appendChild(editButton);
+
+        this.viewPictureViewer = <ViewPictureViewer>this.createSubView(new ViewPictureViewer(viewerElement, this.data));
+        this.viewPictureViewer.render();
+
+        return viewerElement;
+    }
+
+    private _buildEditor() {
+
+        var editorElement = this.buildElem('editor'),
+            saveButton = this.buildElem('save-button');
+
+        saveButton.textContent = 'Save';
+        editorElement.appendChild(saveButton);
+
+        this.viewPictureEditor = <ViewPictureEditor>this.createSubView(new ViewPictureEditor(editorElement, this.data));
+        this.viewPictureEditor.render();
+
+        return editorElement;
     }
 }
