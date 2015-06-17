@@ -31,12 +31,12 @@ class Controller {
             .render();
     }
 
-    increaseCounter(viewOverview) {
-        var data = viewOverview.data;
+    increaseCounter(viewPictureViewer) {
+        var data = viewPictureViewer.data;
 
         data.counter++;
 
-        viewOverview.render();
+        viewPictureViewer.render();
         this.viewActiveThumb.render();
 
         this.viewHeader.viewCounterTotal

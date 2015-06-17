@@ -26,7 +26,7 @@ export class ViewBrowser extends View {
             });
         }
 
-        // Create overview item
+        // Create picture item
         this.viewPicture = <ViewPicture>this.createSubView(new ViewPicture(overviewElement));
 
         rootElement.appendChild(thumbsListElement);
