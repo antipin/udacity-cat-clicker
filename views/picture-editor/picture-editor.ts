@@ -10,16 +10,36 @@ export class ViewPictureEditor extends View {
     buildBlock() {
 
         var rootElement = super.buildBlock(),
-            nameElement = this.buildInputElem('name', 'input'),
-            counterElement = this.buildElem('counter', 'input');
+            backgroundElement = this.buildElem('background'),
+            formElement = this.buildElem('form'),
+
+            nameField = this.buildElem('name-field'),
+            nameLabel = this.buildElem('name-label'),
+            nameInput = this.buildInputElem('name', 'input'),
+
+            counterField = this.buildElem('counter-field'),
+            counterLabel = this.buildElem('counter-label'),
+            counterInput = this.buildInputElem('counter', 'input');
+
+        nameLabel.textContent = 'Name:';
+        nameField.appendChild(nameLabel);
+        nameField.appendChild(nameInput);
+
+        counterLabel.textContent = 'Counter:';
+        counterField.appendChild(counterLabel);
+        counterField.appendChild(counterInput);
 
         if (this.data) {
-            nameElement.value = this.data.name;
-            counterElement.value = this.data.counter;
+            backgroundElement.style.backgroundImage = 'url(' + this.data.url + ')';
+            nameInput.value = this.data.name;
+            counterInput.value = this.data.counter;
         }
 
-        rootElement.appendChild(nameElement);
-        rootElement.appendChild(counterElement);
+        formElement.appendChild(nameField);
+        formElement.appendChild(counterField);
+
+        rootElement.appendChild(backgroundElement);
+        rootElement.appendChild(formElement);
 
         this.attachEventsTo(rootElement);
 

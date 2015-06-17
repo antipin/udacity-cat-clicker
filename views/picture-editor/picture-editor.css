@@ -1,3 +1,71 @@
 .view-picture-editor {
+    position: relative;
+    height: 400px;
+    width: 640px;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
+.view-picture-editor__background,
+.view-picture-editor__form {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.view-picture-editor__background {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
+    transform:scaleX(-1);
+    filter: contrast(0.3) brightness(1.5) blur(5px);
+
+}
+
+.view-picture-editor__form {
+    z-index: 2;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 150px;
+    margin-top: -75px;
+    color: #FFF;
+}
+
+.view-picture-editor__name-field,
+.view-picture-editor__counter-field {
+    margin: 10px 0;
+}
+
+.view-picture-editor__name-label,
+.view-picture-editor__counter-label {
+    display: inline-block;
+    width: 40%;
+    margin-right: 30px;
+    text-align: right;
+    color: #000;
+    font-size: 30px;
+    opacity: 0.5;
+}
+
+.view-picture-editor__name,
+.view-picture-editor__counter {
+    display: inline-block;
+    border: 0;
+    width: 30%;
+    background: none;
+    border-bottom: 1px dotted #FFF;
+    font-size: 30px;
+    text-align: center;
+    font-family: Consolas, Menlo, Monaco, monospace;
+
+}
+
+.view-picture-editor__name:focus,
+.view-picture-editor__counter:focus {
+    outline: none;
 }
