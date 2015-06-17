@@ -7,16 +7,17 @@
 .view-picture__save-button {
     user-select: none;
     position: absolute;
-    top: 60px;
-    right: 0;
+    top: 20px;
+    right: 20px;
     width: 100px;
     height: 24px;
     cursor: pointer;
     z-index: 10;
     line-height: 24px;
     text-align: center;
+    background-color: #FFF;
     color: #666;
-    border: 1px solid #888;
     border-radius: 15px;
     font-size: 12px;
+    opacity: 0.5;
 }

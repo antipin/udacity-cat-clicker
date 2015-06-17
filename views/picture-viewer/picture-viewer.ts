@@ -18,9 +18,9 @@ export class ViewPictureViewer extends View {
     buildBlock() {
 
         var rootElement = super.buildBlock(),
-            nameElement = this.buildElem('name'),
             imageElement = this.buildElem('image'),
-            counterElement = this.buildElem('counter', 'sup');
+            nameElement = this.buildElem('name'),
+            counterElement = this.buildElem('counter');
 
         if (this.data) {
             nameElement.textContent = this.data.name;
@@ -28,9 +28,9 @@ export class ViewPictureViewer extends View {
             counterElement.textContent = this.data.counter;
         }
 
-        nameElement.appendChild(counterElement)
+        imageElement.appendChild(nameElement);
+        imageElement.appendChild(counterElement);
 
-        rootElement.appendChild(nameElement);
         rootElement.appendChild(imageElement);
 
         this.attachEventsTo(rootElement);
