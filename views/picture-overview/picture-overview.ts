@@ -18,7 +18,7 @@ export class ViewPictureOverview extends View {
     buildBlock() {
 
         var rootElement = super.buildBlock(),
-            nameElement = this.buildElem('title'),
+            nameElement = this.buildElem('name'),
             imageElement = this.buildElem('image'),
             counterElement = this.buildElem('counter', 'sup');
 

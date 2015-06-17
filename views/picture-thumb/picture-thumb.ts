@@ -18,7 +18,7 @@ export class ViewPictureThumb extends View {
 
         var rootElement = super.buildBlock(),
             infoElement = this.buildElem('info'),
-            nameElement = this.buildElem('title', 'span'),
+            nameElement = this.buildElem('name', 'span'),
             counterElement = this.buildElem('counter', 'span');
 
         if (this.data) {
