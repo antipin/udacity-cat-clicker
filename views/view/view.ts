@@ -18,6 +18,8 @@ export class View {
 
     public events: Array<EventDeclaration>;
 
+    private _state: any = {};
+
     /**
      * Link to elem that is built with this._rebuildCurrentElem()
      * May be not attached to DOM
@@ -70,6 +72,8 @@ export class View {
         }
 
         this._updatePublishedElem();
+
+        return this;
     }
 
     /**
@@ -88,12 +92,30 @@ export class View {
         return elem;
     }
 
-    elem(viewElem, elemName) {
+    buildInputElem(elemName: string, inputType: string = 'text') {
+        var elem = document.createElement('input');
+        elem.type = inputType;
+        elem.classList.add(this.name + BEM_DELIMITER + elemName);
+        return elem;
+    }
+
+    elem(elemName, viewElem?) {
+        viewElem = viewElem || this._publishedElem;
         return viewElem.querySelector(this._buildElemSelector(elemName));
     }
 
     setData(data) {
         this.data = data;
+        return this;
+    }
+
+    setState(property: string, value: any) {
+        this._state[property] = value;
+        this.render();
+    }
+
+    getState() {
+        return this._state;
     }
 
     /**
@@ -112,7 +134,7 @@ export class View {
      */
     attachEventsTo(node: HTMLElement) {
         this.events.forEach((eventDecl) => {
-            var targetNode = eventDecl.elem ? this.elem(node, eventDecl.elem) : node;
+            var targetNode = eventDecl.elem ? this.elem(eventDecl.elem, node) : node;
             targetNode.addEventListener(eventDecl.event, eventDecl.callback);
         });
     }
@@ -124,7 +146,7 @@ export class View {
      */
     detachEventsFrom(node: HTMLElement) {
         this.events.forEach((eventDecl) => {
-            var targetNode = eventDecl.elem ? this.elem(node, eventDecl.elem) : node;
+            var targetNode = eventDecl.elem ? this.elem(eventDecl.elem, node) : node;
             targetNode.removeEventListener(eventDecl.event, eventDecl.callback);
         });
     }

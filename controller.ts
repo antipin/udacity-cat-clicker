@@ -25,8 +25,9 @@ class Controller {
     setActive(viewThumb) {
         var data = viewThumb.data;
         this.viewActiveThumb = viewThumb;
-        this.viewBrowser.viewOverview.setData(data);
-        this.viewBrowser.viewOverview.render();
+        this.viewBrowser.viewPictureOverview
+            .setData(data)
+            .render();
     }
 
     increaseCounter(viewOverview) {
