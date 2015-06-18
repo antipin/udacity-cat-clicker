@@ -55,7 +55,7 @@ export class ViewPicture extends View {
 
             this.viewPictureEditor.render();
             rootNode.classList.add('view-picture_mode_editor');
-            
+
         } else {
 
             this.viewPictureViewer.render();
