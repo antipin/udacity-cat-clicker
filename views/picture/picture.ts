@@ -52,12 +52,15 @@ export class ViewPicture extends View {
         var rootNode = this.rootNode()
 
         if (mode === 'edit') {
+
+            this.viewPictureEditor.render();
             rootNode.classList.add('view-picture_mode_editor');
+            
         } else {
+
+            this.viewPictureViewer.render();
             rootNode.classList.remove('view-picture_mode_editor');
         }
-
-        this.viewPictureViewer.render();
     }
 
     save() {
