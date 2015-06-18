@@ -51,7 +51,7 @@ class Controller {
         var data = viewPicture.data;
 
         data.name = newData.name;
-        data.counter = newData.counter;
+        data.counter = parseInt(newData.counter, 10) || 0;
 
         viewPicture.switchMode('view');
         this.viewActiveThumb.render();
