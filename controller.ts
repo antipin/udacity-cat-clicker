@@ -1,3 +1,5 @@
+require('./views/page/page');
+
 import {ViewHeader} from './views/header/header';
 import {ViewBrowser} from './views/browser/browser';
 import {ViewPictureThumb} from './views/picture-thumb/picture-thumb';

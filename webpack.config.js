@@ -1,4 +1,5 @@
-var path = require('path');
+var path = require('path'),
+    HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -30,5 +31,9 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
-    }
+    },
+    plugins: [new HtmlWebpackPlugin({
+        title: 'Cat clicker',
+        filename: 'index.html'
+    })]
 };

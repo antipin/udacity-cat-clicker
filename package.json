@@ -13,6 +13,7 @@
     "awesome-typescript-loader": "^0.5.4",
     "css-loader": "^0.14.5",
     "file-loader": "^0.8.4",
+    "html-webpack-plugin": "^1.5.2",
     "image-webpack-loader": "^1.6.1",
     "imagemin": "^3.2.0",
     "style-loader": "^0.12.3",
